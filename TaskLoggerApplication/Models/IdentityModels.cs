@@ -29,5 +29,7 @@ namespace TaskLoggerApplication.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<TaskLoggerApplication.Models.Project> Projects { get; set; }
     }
 }

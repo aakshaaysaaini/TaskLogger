@@ -1,0 +1,126 @@
+﻿@model  TaskLoggerApplication.Models.ProjectTasksViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<script>
+    function showHideTables() {
+        var select = document.getElementById("select_table");
+        var result = select.options[select.selectedIndex].value;
+        if (result == "projects") {
+            document.getElementById("project_table").style.display = "block";
+            document.getElementById("user_table").style.display = "none";
+        }
+        else if (result == "users") {
+            document.getElementById("project_table").style.display = "none";
+            document.getElementById("user_table").style.display = "block";
+        }
+        else {
+            document.getElementById("project_table").style.display = "none";
+            document.getElementById("user_table").style.display = "none";
+        }
+    }
+</script>
+
+<h2>Admin Page</h2>
+<select id="select_table" onchange="showHideTables();">
+    <option value="none" selected>None</option>
+    <option value="projects">Projects</option>
+    <option value="users">Users</option>
+</select>
+
+<div id="project_table" style="display:none">
+    <table class="table table-hover">
+        <tr style="background-color:azure">
+            <th>
+                Project Name
+            </th>
+            @*<th>
+                    Start Date
+                </th>
+                <th>
+                    End Date
+                </th>*@
+            <th>
+                Duration
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.Projects)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectName)
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.StartDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndDate)
+                    </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Duration)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                </td>
+            </tr>
+        }
+
+    </table>
+    <p>
+        @Html.ActionLink("Add Project", "Create")
+    </p>
+</div>
+
+<div id="user_table" style="display:none">
+    <table class="table table-hover">
+        <tr>
+            <th>
+                Full Name
+            </th>
+            <th>
+                Email ID
+            </th>
+            @*<th>
+                Age
+            </th>*@
+            <th>
+                Phone Number
+            </th>
+            <th>
+
+            </th>
+        </tr>
+        @foreach (var us in Model.Users)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(model => us.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(model => us.Email)
+            </td>
+            @*<td>
+            @Html.DisplayFor(model => us.)
+        </td>*@
+            <td>
+                @Html.DisplayFor(model => us.PhoneNumber)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = us.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = us.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = us.Id })
+            </td>
+        </tr>
+        }
+    </table>
+</div>
+
+<div>
+    
+</div>
