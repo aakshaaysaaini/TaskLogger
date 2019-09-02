@@ -5,6 +5,7 @@
 }
 
 <script>
+
     function showHideTables() {
         var select = document.getElementById("select_table");
         var result = select.options[select.selectedIndex].value;
@@ -21,9 +22,11 @@
             document.getElementById("user_table").style.display = "none";
         }
     }
+
 </script>
 
 <h2>Admin Page</h2>
+
 <select id="select_table" onchange="showHideTables();">
     <option value="none" selected>None</option>
     <option value="projects">Projects</option>
@@ -119,8 +122,4 @@
         </tr>
         }
     </table>
-</div>
-
-<div>
-    
 </div>

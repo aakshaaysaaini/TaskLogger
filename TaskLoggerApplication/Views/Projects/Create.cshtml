@@ -7,48 +7,52 @@
 <h2>Create</h2>
 
 <script>
-     var i = 0, j = 0;
+    var i = 0, j = 0;
     function add_text() {
-        var box_value = document.getElementById("user").value;
-        document.getElementById("user_list_" + i).innerHTML = box_value;
+        var select = document.getElementById("user_list");
+        var value = select.options[select.selectedIndex].value;
+
+        document.getElementById("user_" + i).innerHTML = value;
+
         i++;
-        var para = document.createElement("p");
-        para.setAttribute("id", "user_list_" + i);
+
         var input1 = document.createElement("input");
-        var input2 = document.createElement("input");
+
+        select.remove(select.selectedIndex);
+
+        var para = document.createElement("p");
+        para.setAttribute("id", "user_" + i);
+
         input1.setAttribute("type", "hidden");
-        input1.setAttribute("name", "ApplicationUsers["+ j +"].ID");
-        input1.setAttribute("value", "0");
-        input2.setAttribute("type", "hidden");
-        input2.setAttribute("name", "ApplicationUsers[" + j + "].UserName");
-        input2.setAttribute("value", box_value);
+        input1.setAttribute("value", value);
+        input1.setAttribute("name", "Username[" + j + "]");
 
-        var div1 = document.getElementById("users_para");
-        div1.appendChild(para);
-
-        var div2 = document.getElementById("user_container");
-
-        div2.appendChild(input1);
-        div2.appendChild(input2);
         j++;
-        document.getElementById("user").value = "";
+
+        var div_para = document.getElementById("add_para");
+        div_para.appendChild(para);
+
+        var dropdown_div = document.getElementById("dropdown_div");
+        dropdown_div.appendChild(input1);
 
     }
 </script>
-@*<div class="form-group" id="user_container">
-    <label class="col-md-5">Users</label>
-    <div class="col-md-10" id="users_para">
-        <p id="user_list_0"></p>
-    </div>
-    <input type="text" id="user" class="form-control" />
-    <br /><br />
-    <input type="button" value="Add" id="add" onclick="add_text();" />
+
+@*<div id="dropdown_div">
+    <p id="user_0"></p>
+    <select id="user_list">
+        @foreach (var uName in ViewBag.items)
+        {
+            <option value="@uName">@uName</option>
+        }
+    </select>
 </div>*@
 
-@using (Html.BeginForm()) 
+
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Project</h4>
         <hr />
@@ -76,19 +80,37 @@
                 @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
             </div>
         </div>
-         
-        <div class="form-group" id="user_container">
-            <label class="col-md-5">Users</label>
-            <div class="col-md-10" id="users_para">
-                <p id="user_list_0"></p>
-            </div>
-            <input type="text" id="user" class="form-control" />
-            <br /><br />
-            <input type="button" value="Add" id="add" onclick="add_text();" />
-        </div>
-        <br /><br /><br /><br /><br /><br />
 
+        @*<div class="form-group">
+            @Html.Label("Username", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("Username", ViewBag.ListItems as List<SelectListItem>, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+            </div>
+            <div>
+                <input type="button" id="" value="Add" onclick="add_text();" />
+            </div>
+        </div>*@
         <div class="form-group">
+            <div id="dropdown_div">
+                <label style="padding-left : 137px">Users</label>
+                <div id="add_para" style="padding-left : 215px">
+                    <p id="user_0"></p>
+                </div>
+                <div style="padding-left : 215px">
+                    <select id="user_list" onchange="add_text();">
+                        <option></option>
+                        @foreach (var uName in ViewBag.ListItems)
+                        {
+                            <option value="@uName">@uName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <br />
+
+
+
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>

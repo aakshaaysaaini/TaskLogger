@@ -1,0 +1,111 @@
+﻿@model IEnumerable<TaskLoggerApplication.Models.Tasks>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    .split {
+        height: 1000px;
+        position: fixed;
+        /*z-index: 1;*/
+        overflow-x: hidden;
+        padding: 20px;
+        border: 0px solid black;
+    }
+
+    .left {
+        left: 0;
+        top : 0.1px;
+    }
+
+    .right {
+        right: 0;
+        top: 0.1px;
+    }
+
+    /*.centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;*/
+    }
+</style>
+
+<script>
+    function loadDiscription(id) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("data").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "@Url.Action("Ajax_getDescription","Tasks")" + "?ID=" + id, true);
+        xhttp.send();
+    }
+</script>
+
+<h1>User Panel</h1>
+
+<br />
+<p style="font-weight : bold">
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<div class="split left" style="width : 10%; margin : 200px">
+    <ul>
+        @foreach (var tsk in Model)
+        {
+            <li style="font-weight : bold">
+                <a href="#" onclick="loadDiscription(@tsk.ID)">@Html.DisplayFor(modelitem => tsk.TaskName)</a>
+            </li>
+            @*<li style="font-weight : bolder; font-size : 24px">@tsk.TaskName</li>*@
+        }
+    </ul>
+</div>
+
+<br />
+<br />
+
+<div id="data" class="split right" style="width : 60%; margin : 200px"></div>
+
+@*@foreach(var i in Model)
+    {
+    <p>@Html.ActionLink("Edit", "Edit", new { id = i.ID })</p>
+    }*@
+
+@*<table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TaskName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TaskDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TaskName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TaskDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+                @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+            </td>
+        </tr>
+    }
+
+    </table>*@

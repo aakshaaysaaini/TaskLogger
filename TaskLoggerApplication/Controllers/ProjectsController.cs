@@ -10,6 +10,7 @@ using TaskLoggerApplication.Models;
 
 namespace TaskLoggerApplication.Controllers
 {
+    [Authorize]
     public class ProjectsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -19,7 +20,8 @@ namespace TaskLoggerApplication.Controllers
         {
             ProjectTasksViewModel projectTasks = new ProjectTasksViewModel();
             projectTasks.Projects = db.Projects.ToList();
-            projectTasks.Users = db.Users.Where(i => !i.UserName.Equals(User.Identity.Name)).ToList();
+            projectTasks.Users = db.Users.Where(i => !(i.UserName.Equals(User.Identity.Name))).ToList();
+            ViewBag.logName = User.Identity.Name;
 
             return View(projectTasks);
         }
@@ -50,6 +52,19 @@ namespace TaskLoggerApplication.Controllers
         // GET: Projects/Create
         public ActionResult Create()
         {
+            List<String> userrName = db.Users.Where(i => i.Project.ID != 0).Select(i => i.UserName).ToList();
+            //List<SelectListItem> selectListItems = new List<SelectListItem>();
+
+            //foreach(var uName in userrName)
+            //{
+            //    selectListItems.Add(new SelectListItem
+            //    {
+            //        Text = uName,
+            //        Value = uName
+            //    });
+            //}
+            //ViewBag.ListItems = selectListItems;
+            ViewBag.ListItems = userrName;
 
             return View();
         }
@@ -59,17 +74,25 @@ namespace TaskLoggerApplication.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,ProjectName,StartDate,EndDate,Duration")] Project project)
+        public ActionResult Create([Bind(Include = "ID,ProjectName,StartDate,EndDate,Duration")] Project project, List<String> Username)
         {
             project.Duration = calcDuration(project.StartDate, project.EndDate);
-            if (ModelState.IsValid)
-            {
-                db.Projects.Add(project);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+            //if (ModelState.IsValid)
+            //{
 
-            return View(project);
+            foreach (var un in Username)
+                {
+                project.ApplicationUsers.Add(db.Users.Where(i => i.UserName == un).First());
+                }
+            db.Projects.Add(project);
+            db.SaveChanges();
+
+            //db.Projects.Add(project);
+            //db.SaveChanges();
+            return RedirectToAction("Index");
+            //}
+
+            //return View(project);
         }
 
         // GET: Projects/Edit/5

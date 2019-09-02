@@ -48,10 +48,13 @@ namespace TaskLoggerApplication.Models
 
     public class LoginViewModel
     {
-        [Required]
         [Display(Name = "Email")]
         [EmailAddress]
         public string Email { get; set; }
+
+        [Required]
+        [Display(Name = "User Name")]
+        public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -60,10 +63,27 @@ namespace TaskLoggerApplication.Models
 
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
+
     }
 
     public class RegisterViewModel
     {
+        [Required]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        [Required]
+        [Display(Name = "User Name")]
+        public string UserName { get; set; }
+
+        [Required]
+        [Display(Name = "Age")]
+        public int Age { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
@@ -74,6 +94,7 @@ namespace TaskLoggerApplication.Models
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
+
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]

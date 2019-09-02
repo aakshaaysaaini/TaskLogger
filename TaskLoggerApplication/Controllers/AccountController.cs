@@ -68,6 +68,8 @@ namespace TaskLoggerApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
+            ApplicationDbContext db = new ApplicationDbContext();
+            var db_users = db.Users.First(i => i.UserName == model.UserName);
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -75,11 +77,11 @@ namespace TaskLoggerApplication.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    return db_users.IsAdmin? RedirectToAction("Index", "Projects") : RedirectToAction("Index", "Tasks");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -88,7 +90,9 @@ namespace TaskLoggerApplication.Controllers
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
+                    //return RedirectToAction("Index", "Home");
             }
+
         }
 
         //
@@ -151,7 +155,7 @@ namespace TaskLoggerApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, Age = model.Age };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -163,7 +167,7 @@ namespace TaskLoggerApplication.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Projects");
                 }
                 AddErrors(result);
             }
