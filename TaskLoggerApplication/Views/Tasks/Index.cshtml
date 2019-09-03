@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TaskLoggerApplication.Models.Tasks>
+﻿@model TaskLoggerApplication.Models.ProjectTasksViewModel
 
 @{
     ViewBag.Title = "Index";
@@ -8,28 +8,19 @@
     .split {
         height: 1000px;
         position: fixed;
-        /*z-index: 1;*/
-        overflow-x: hidden;
+        z-index: 1;
         padding: 20px;
         border: 0px solid black;
     }
 
     .left {
         left: 0;
-        top : 0.1px;
+        top: 200px;
     }
 
     .right {
         right: 0;
-        top: 0.1px;
-    }
-
-    /*.centered {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;*/
+        top: 200px;
     }
 </style>
 
@@ -44,68 +35,110 @@
         xhttp.open("GET", "@Url.Action("Ajax_getDescription","Tasks")" + "?ID=" + id, true);
         xhttp.send();
     }
+
+    function filter1() {
+        var select = document.getElementById("filter_tasks");
+        var value = select.options[select.selectedIndex].value;
+
+        if (value == "User") {
+            document.getElementById("user_div").style.display = "block";
+            document.getElementById("project_div").style.display = "none";
+        }
+        else if (value == "Project") {
+            document.getElementById("user_div").style.display = "none";
+            document.getElementById("project_div").style.display = "block";
+        }
+        else {
+            document.getElementById("user_div").style.display = "none";
+            document.getElementById("project_div").style.display = "none";
+        }
+    }
+
+    function showUserTasks() {
+        var select = document.getElementById("user_list");
+        var value = select.options[select.selectedIndex].value;
+
+        var input1 = document.createElement("input");
+        input1.setAttribute("type", "hidden");
+        input1.setAttribute("name", "userName");
+        input1.setAttribute("value", value);
+
+        var input2 = document.createElement("input");
+        input2.setAttribute("type", "hidden");
+        input2.setAttribute("name", "sn");
+        input2.setAttribute("value", 0);
+
+        var div_user = document.getElementById("send_user");
+        div_user.appendChild(input1);
+        div_user.appendChild(input2);
+
+        document.getElementById("user_div").style.display = "none";
+        document.getElementById("project_div").style.display = "none";
+    }
 </script>
 
 <h1>User Panel</h1>
 
-<br />
-<p style="font-weight : bold">
-    @Html.ActionLink("Create New", "Create")
-</p>
 
-<div class="split left" style="width : 10%; margin : 200px">
-    <ul>
-        @foreach (var tsk in Model)
-        {
-            <li style="font-weight : bold">
-                <a href="#" onclick="loadDiscription(@tsk.ID)">@Html.DisplayFor(modelitem => tsk.TaskName)</a>
-            </li>
-            @*<li style="font-weight : bolder; font-size : 24px">@tsk.TaskName</li>*@
-        }
-    </ul>
+@using (Html.BeginForm())
+{
+<div>
+    <div>
+        <select id="filter_tasks" onchange="filter1();">
+            <option value="none" style="font-weight : bold"></option>
+            <option value="User" style="font-weight : bold">User</option>
+            <option value="Project" style="font-weight : bold">Project</option>
+        </select>
+    </div>
+    <br />
+
+    <div id="user_div" style="display : none">
+        <label>Users</label>
+        <select id="user_list">
+            @foreach (var us in Model.Users)
+            {
+                <option value="@us.UserName" style="font-weight : bold">@us.UserName</option>
+            }
+        </select>
+        <div id="send_user">
+
+        </div>
+        <input type="submit" value="show" class="btn btn-default" onclick="showUserTasks();" />
+    </div>
+
+    <div id="project_div" style="display:none">
+        <label>Projects</label>
+        <select id="project_list">
+            @foreach (var pr in Model.Projects)
+            {
+                <option value="@pr.ProjectName" style="font-weight : bold">@pr.ProjectName</option>
+            }
+        </select>
+    </div>
+
+
+
+    <br />
+    <p style="font-weight : bold">
+        @Html.ActionLink("Create New", "Create")
+    </p>
+
+    <div class="split left" style="width : 10%; margin : 10px">
+        <ul>
+            @foreach (var tsk in Model.Users)
+            {
+                var i = 0;
+                <li style="font-weight : bold">
+                    <a href="#" onclick="loadDiscription(@tsk.Tasks[i].ID)">@Html.DisplayFor(modelitem => tsk.Tasks[i].TaskName)</a>
+                </li>
+                i++;
+            }
+        </ul>
+    </div>
+
+    <br />
+    <br />
+    <div id="data" class="split right" style="width : 60%; margin : 10px"></div>
 </div>
+}
 
-<br />
-<br />
-
-<div id="data" class="split right" style="width : 60%; margin : 200px"></div>
-
-@*@foreach(var i in Model)
-    {
-    <p>@Html.ActionLink("Edit", "Edit", new { id = i.ID })</p>
-    }*@
-
-@*<table class="table">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TaskName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TaskDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th></th>
-        </tr>
-
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TaskName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TaskDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-                @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-            </td>
-        </tr>
-    }
-
-    </table>*@

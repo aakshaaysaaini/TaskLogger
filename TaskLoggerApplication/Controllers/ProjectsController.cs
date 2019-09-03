@@ -21,7 +21,6 @@ namespace TaskLoggerApplication.Controllers
             ProjectTasksViewModel projectTasks = new ProjectTasksViewModel();
             projectTasks.Projects = db.Projects.ToList();
             projectTasks.Users = db.Users.Where(i => !(i.UserName.Equals(User.Identity.Name))).ToList();
-            ViewBag.logName = User.Identity.Name;
 
             return View(projectTasks);
         }

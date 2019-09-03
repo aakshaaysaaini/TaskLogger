@@ -21,5 +21,6 @@ namespace TaskLoggerApplication.Models
         public string TaskDescription { get; set; }
         public Status Status { get; set; }
         public virtual Project Project { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

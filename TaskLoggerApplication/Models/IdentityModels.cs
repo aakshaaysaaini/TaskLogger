@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -14,6 +15,7 @@ namespace TaskLoggerApplication.Models
         public int Age { get; set; }
         public bool IsAdmin  { get; set; }
         public virtual Project Project { get; set; }
+        public virtual List<Tasks> Tasks { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {

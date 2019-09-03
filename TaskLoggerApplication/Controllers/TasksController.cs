@@ -16,9 +16,35 @@ namespace TaskLoggerApplication.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Tasks
-        public ActionResult Index()
+        public ActionResult Index(string uName, string pName)
         {
-            return View(db.Tasks.ToList());
+            ProjectTasksViewModel projectUsers = new ProjectTasksViewModel();
+            if (uName != null && pName == null)
+            {
+                projectUsers.Users = db.Users.Where(i => i.UserName == uName).ToList();
+                projectUsers.Projects = db.Projects.ToList();
+
+            }
+            else if(pName != null && uName == null)
+            {
+                projectUsers.Projects = db.Projects.Where(i => i.ProjectName == pName).ToList();
+                projectUsers.Users = db.Users.ToList();
+            }
+            else
+            {
+                projectUsers.Projects = db.Projects.ToList();
+                projectUsers.Users = db.Users.ToList();
+                projectUsers.Tasks = db.Tasks.ToList();
+            }
+
+            return View(projectUsers);
+
+        }
+
+        [HttpPost]
+        public ActionResult Index(int sn, string userName, string projectName)
+        {
+            return RedirectToAction("Index", new { uName = userName, pName = projectName});
         }
 
         public String Ajax_getDescription(int ID)
@@ -57,8 +83,9 @@ namespace TaskLoggerApplication.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,TaskName,TaskDescription,Status")] Tasks tasks)
+        public ActionResult Create(Tasks tasks, string userName)
         {
+            tasks.User = db.Users.First(i => i.UserName == userName);
             if (ModelState.IsValid)
             {
                 db.Tasks.Add(tasks);

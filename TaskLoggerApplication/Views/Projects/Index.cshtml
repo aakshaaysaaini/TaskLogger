@@ -9,6 +9,7 @@
     function showHideTables() {
         var select = document.getElementById("select_table");
         var result = select.options[select.selectedIndex].value;
+
         if (result == "projects") {
             document.getElementById("project_table").style.display = "block";
             document.getElementById("user_table").style.display = "none";

@@ -9,5 +9,6 @@ namespace TaskLoggerApplication.Models
     {
         public List<Project> Projects { get; set; }
         public List<ApplicationUser> Users { get; set; }
+        public List<Tasks> Tasks { get; set; }
     }
 }
